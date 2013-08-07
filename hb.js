@@ -19,6 +19,15 @@ define(['text', 'handlebars'], function(text, handlebars) {
 
     var write = function(pluginName, moduleName, write) {
 
+        if(!handlebars.precompile && require.nodeRequire) {
+            try {
+                handlebars = require.nodeRequire('handlebars');
+            } catch(error) {
+                process.stdout.write("\nLooks like the runtime version of Handlebars is used.\n");
+                process.stderr.write("Install handlebars with npm to precompile templates: npm install handlebars --save-dev\n\n");
+            }
+        }
+
         if(moduleName in buildCache) {
 
             if(!buildTemplate) {
