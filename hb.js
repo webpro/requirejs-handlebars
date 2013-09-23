@@ -6,7 +6,7 @@ define(['text', 'handlebars'], function(text, handlebars) {
 
     var load = function(moduleName, parentRequire, load, config) {
 
-        text.get(parentRequire.toUrl(moduleName), function(data) {
+        text.load(moduleName, parentRequire, function(data) {
 
             if(config.isBuild) {
                 buildCache[moduleName] = data;
@@ -14,7 +14,7 @@ define(['text', 'handlebars'], function(text, handlebars) {
             } else {
                 load(handlebars.compile(data));
             }
-        });
+        }, config);
     };
 
     var write = function(pluginName, moduleName, write) {
