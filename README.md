@@ -56,3 +56,7 @@ There are a couple of ways to do this, but probably the easiest is to overrule t
 Additionally, install Handlebars with npm, so the plugin still has the full version available during build:
 
     npm install handlebars --save-dev
+
+## License
+
+[MIT](http://webpro.mit-license.org)
