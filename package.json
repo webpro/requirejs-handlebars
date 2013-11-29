@@ -1,0 +1,16 @@
+{
+  "name": "requirejs-handlebars",
+  "version": "0.1.0",
+  "description": "Simple Handlebars plugin for RequireJS.",
+  "keywords": ["requirejs", "handlebars", "plugin", "templates", "compile", "precompiled", "AMD"],
+  "main": "hb.js",
+  "dependencies": {
+    "handlebars": "~1.1.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/webpro/requirejs-handlebars.git"
+  },
+  "license": "MIT"
+}
