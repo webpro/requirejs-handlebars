@@ -4,7 +4,9 @@ Simple Handlebars plugin for RequireJS.
 
 * Requires the official `text!` plugin.
 * Like the offical `text!` plugin, include the file extension in the module id.
-* Make sure to [include the runtime build](#handlebars-runtime) of Handlebars in your build.
+* For (optimized) builds using r.js, make sure to
+	* **Install Handlebars from npm** (not Bower or [website](http://handlebarsjs.com)).
+	* Include the **runtime** version of Handlebars.
 
 ## Example usage
 
@@ -30,10 +32,29 @@ This plugin has no automatic partial registration (by design).
 
 ## Example config
 
+Handlebars includes AMD builds since v1.1.0. Use a `package` config:
+
+	require.config({
+		paths: {
+			text: 'lib/text/text',
+			hb: 'lib/requirejs-handlebars/hb',
+			'handlebars.runtime': 'node_modules/handlebars/handlebars.runtime.amd'
+		},
+		packages: [
+			{
+				name: 'handlebars',
+				location: 'node_modules/handlebars/dist/amd',
+				main: './handlebars'
+			}
+		]
+	});
+
+Using a version of Handlebars lower than v1.1.0? Then use a configuration like this:
+
     require.config({
         paths: {
             text: 'lib/requirejs-text/text',
-            handlebars: 'lib/handlebars/handlebars',
+            handlebars: 'node_modules/handlebars/dist/handlebars',
             hb: 'lib/requirejs-handlebars/hb'
         },
         shim: {
@@ -47,15 +68,14 @@ This plugin has no automatic partial registration (by design).
 
 The Handlebars runtime is much smaller than the full version, and it's made to render pre-compiled templates.
 It's highly efficient to use pre-compiled templates and the runtime template engine in production.
-There are a couple of ways to do this, but probably the easiest is to overrule the path in the r.js build config, e.g.:
+
+Pre-compiled templates use `handlebars.runtime` as a dependency.
+
+Still using a version of Handlebars lower than v1.1.0? Then override the path for `handlebars`, e.g.:
 
         paths: {
-            handlebars: 'lib/handlebars/handlebars.runtime',
+            handlebars: 'node_modules/handlebars/dist/handlebars.runtime'
         }
-
-Additionally, install Handlebars with npm, so the plugin still has the full version available during build:
-
-    npm install handlebars --save-dev
 
 ## License
 
