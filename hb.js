@@ -1,7 +1,11 @@
-define(['text', 'handlebars'], function(text, handlebars) {
+define(['text', 'handlebars'], function(text, handlebarsImport) {
 
-    var buildCache = {},
-        buildCompileTemplate = 'define("{{pluginName}}!{{moduleName}}", ["handlebars"], function(handlebars) {return handlebars.template({{{fn}}})});',
+	var importDefault = handlebarsImport.hasOwnProperty('default'),
+		handlebars = importDefault ? handlebarsImport['default'] : handlebarsImport,
+		buildCache = {},
+        buildCompileTemplate = importDefault ?
+			'define("{{pluginName}}!{{moduleName}}", ["handlebars.runtime"], function(hr) {return hr["default"].template({{{fn}}})});' :
+			'define("{{pluginName}}!{{moduleName}}", ["handlebars"], function(handlebars) {return handlebars.template({{{fn}}})});',
         buildTemplate;
 
     var load = function(moduleName, parentRequire, load, config) {
