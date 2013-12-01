@@ -1,6 +1,7 @@
-define(['text', 'handlebars'], function(text, handlebarsImport) {
+define(['text', 'handlebars', 'module'], function(text, handlebarsImport, module) {
 
-	var importDefault = handlebarsImport.hasOwnProperty('default'),
+	var pluginConfig = module.config(),
+		importDefault = handlebarsImport.hasOwnProperty('default'),
 		handlebars = importDefault ? handlebarsImport['default'] : handlebarsImport,
 		buildCache = {},
         buildCompileTemplate = importDefault ?
@@ -8,17 +9,32 @@ define(['text', 'handlebars'], function(text, handlebarsImport) {
 			'define("{{pluginName}}!{{moduleName}}", ["handlebars"], function(handlebars) {return handlebars.template({{{fn}}})});',
         buildTemplate;
 
+	var finishLoad = function(moduleName, load, config, data) {
+		if(config.isBuild) {
+			buildCache[moduleName] = data;
+			load();
+		} else {
+			load(handlebars.compile(data));
+		}
+	};
+
     var load = function(moduleName, parentRequire, load, config) {
 
-        text.load(moduleName, parentRequire, function(data) {
+		var done = finishLoad.bind(null, moduleName, load, config),
+			doPreProcess = pluginConfig && typeof pluginConfig.preProcess === 'function',
+			preProcess;
 
-            if(config.isBuild) {
-                buildCache[moduleName] = data;
-                load();
-            } else {
-                load(handlebars.compile(data));
-            }
-        }, config);
+		if(doPreProcess) {
+			preProcess = pluginConfig.preProcess.bind(null, done, {
+				moduleName: moduleName,
+				parentRequire: parentRequire,
+				config: config,
+				pluginConfig: pluginConfig
+			});
+		}
+
+        text.load(moduleName, parentRequire, doPreProcess ? preProcess : done, config);
+
     };
 
     var write = function(pluginName, moduleName, write) {

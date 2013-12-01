@@ -7,6 +7,7 @@ Simple Handlebars plugin for RequireJS.
 * For (optimized) builds using r.js, make sure to
 	* **Install Handlebars from npm** (not Bower or [website](http://handlebarsjs.com)).
 	* Include the **runtime** version of Handlebars.
+* Supports preprocessing of templates before they are precompiled.
 
 ## Example usage
 
@@ -76,6 +77,26 @@ Still using a version of Handlebars lower than v1.1.0? Then override the path fo
         paths: {
             handlebars: 'node_modules/handlebars/dist/handlebars.runtime'
         }
+
+## Preprocessing
+
+The plugin allows to process the data before it gets precompiled by utilizing the `preProcess` configuration option:
+
+	require.config({
+		config: {
+			hb: {
+				preProcess: function(done, options, data) {
+					done(modifiedData);
+				}
+			}
+		}
+	});
+
+It's like a two-phase pre-compilation that includes your custom rendering, and then let Handlebars precompile the resulting template. This is very useful for including e.g. translated data (i18n) in your precompiled templates.
+
+The benefit lies in the performance win: no template helper needed at runtime in the optimized build, since the processed (translated) text is already there. This way, the overhead of including the dictionary file and the template helper calls is removed.
+
+See [requirejs-handlebars-i18n-example](https://github.com/webpro/requirejs-handlebars-i18n-example) for an example.
 
 ## License
 
